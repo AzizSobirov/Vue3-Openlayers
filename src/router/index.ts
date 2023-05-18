@@ -18,6 +18,10 @@ const router = createRouter({
           component: () => import("@/pages/AddUser.vue"),
         },
         {
+          path: "edit/:id",
+          component: () => import("@/pages/EditUser.vue"),
+        },
+        {
           path: "map/:lat/:long/:zoom",
           component: () => import("@/pages/Map.vue"),
         },

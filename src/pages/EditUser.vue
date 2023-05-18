@@ -2,7 +2,7 @@
   <div class="container">
     <form class="form" @submit.prevent="submitForm()">
       <div class="form-title">
-        <h3>Добавить Заявку</h3>
+        <h3>Изменить Заявку</h3>
         <h5>Введите данные</h5>
       </div>
 
@@ -74,7 +74,7 @@
 
       <div class="form-actions">
         <button type="reset">Отмена</button>
-        <button type="submit" :disabled="!latitude">Применить</button>
+        <button type="submit" :disabled="!latitude">Изменить</button>
       </div>
     </form>
   </div>
@@ -93,11 +93,12 @@ import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { transform } from "ol/proj";
 import markerLogo from "../assets/marker.png";
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default defineComponent({
   data() {
     return {
+      id: "",
       name: "",
       phone: "",
       address: "",
@@ -118,11 +119,33 @@ export default defineComponent({
       map: null,
     };
   },
+  computed: {
+    ...mapState(["users"]),
+  },
   mounted() {
     this.initializeMap();
+    let itemFound = false;
+    this.users.forEach((item) => {
+      if (item.id == this.$route.params.id) {
+        itemFound = true;
+        this.id = item.id;
+        this.name = item.name;
+        this.phone = item.phone;
+        this.address = item.address;
+        this.tip = item.tip;
+        this.prioritet = item.prioritet;
+        this.latitude = item.lat;
+        this.longitude = item.lng;
+        this.geocodeCity();
+      }
+    });
+
+    if (!itemFound) {
+      this.$router.push("/");
+    }
   },
   methods: {
-    ...mapMutations(["addUser"]),
+    ...mapMutations(["editUser"]),
     initializeMap() {
       this.map = new Map({
         target: "map",
@@ -206,6 +229,7 @@ export default defineComponent({
     submitForm() {
       if (this.latitude) {
         let user = {
+          id: this.id,
           name: this.name,
           phone: this.phone,
           address: this.address,
@@ -214,7 +238,7 @@ export default defineComponent({
           lat: this.latitude,
           lng: this.longitude,
         };
-        this.addUser(user);
+        this.editUser(user);
         this.$router.push("/");
       }
     },

@@ -81,7 +81,7 @@
               <div @click="$emit('deleteUser', user.id)">
                 <img src="@/assets/trash-2.svg" />
               </div>
-              <div><img src="@/assets/edit-2.svg" /></div>
+              <router-link :to="'/edit/'+user.id"><img src="@/assets/edit-2.svg" /></router-link>
             </div>
           </td>
         </tr>
